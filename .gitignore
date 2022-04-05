@@ -1,0 +1,6 @@
+# Project exclude paths
+/application/JavafxView/target/
+/domain/target/
+/FirebaseRepository/target/
+/out/
+/usecases/target/

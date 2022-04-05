@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="JavafxView" />
+        <module name="FirebaseRepository" />
+        <module name="usecases" />
+        <module name="config" />
+        <module name="domain" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="applicationFX" target="16" />
+      <module name="config" target="16" />
+      <module name="domain" target="16" />
+      <module name="JavaFXApp" target="16" />
+      <module name="usecases" target="16" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<SplitPane dividerPositions="0.20355731225296442" orientation="VERTICAL" style="-fx-background-color: #bababa;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.darkyver.javafxview.controllersView.accountingView.AccountingViewController">
+   <items>
+      <HBox prefHeight="100.0" prefWidth="200.0" />
+      <SplitPane dividerPositions="0.3712374581939799" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #bababa;">
+         <items>
+            <VBox>
+               <children>
+                  <Button fx:id="btnAddUser" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMousePressed="#addNewUserPressed" onMouseReleased="#addNewUserRelease" prefHeight="35.0" style="-fx-background-color: #454a63;" text="Новый ученик" textFill="WHITE">
+                     <font>
+                        <Font name="Arial" size="14.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </Button>
+                  <ListView fx:id="usersListView" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #bababa;" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
+            <VBox SplitPane.resizableWithParent="false">
+               <children>
+                  <HBox prefHeight="35.0" prefWidth="200.0" spacing="3.0" style="-fx-background-color: #bababa;">
+                     <children>
+                        <Button fx:id="btnAddLesson" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMousePressed="#addLessonPressed" onMouseReleased="#addLessonRelease" style="-fx-background-color: #454a63;" text="Новое занятие" textFill="WHITE" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font name="Arial" size="14.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="btnAddPayment" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMousePressed="#addPaymentPressed" onMouseReleased="#addPaymentRelease" style="-fx-background-color: #454a63;" text="Новая оплата" textFill="WHITE" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font name="Arial" size="14.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <ScrollPane fx:id="recordsScrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" vbarPolicy="ALWAYS" VBox.vgrow="ALWAYS">
+                     <content>
+                        <VBox fx:id="recordsVBox" maxHeight="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #bababa;">
+                           <children>
+                              <HBox layoutX="13.0" layoutY="13.0" prefHeight="60.0" prefWidth="200.0" spacing="1.0" style="-fx-background-color: #4c7551; -fx-background-radius: 10;">
+                                 <children>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #8c2a2a;" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <CheckBox alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Не проведено" textFill="WHITE" VBox.vgrow="ALWAYS">
+                                             <font>
+                                                <Font name="Arial" size="14.0" />
+                                             </font>
+                                          </CheckBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <CheckBox alignment="BOTTOM_CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" selected="true" text="Оплачено" textFill="WHITE" VBox.vgrow="ALWAYS">
+                                             <font>
+                                                <Font name="Arial" size="14.0" />
+                                             </font>
+                                          </CheckBox>
+                                          <Label alignment="TOP_CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="179.0" text="02.04 12:33" textFill="WHITE" VBox.vgrow="ALWAYS" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="3.0" right="3.0" top="3.0" />
+                                 </VBox.margin>
+                              </HBox>
+                              <HBox layoutX="10.0" layoutY="73.0" prefHeight="60.0" prefWidth="200.0" spacing="1.0" style="-fx-background-color: #4c7551;">
+                                 <children>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #4c7551;" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <CheckBox alignment="BOTTOM_CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" selected="true" text="Проведено" textFill="WHITE" VBox.vgrow="ALWAYS">
+                                             <font>
+                                                <Font name="Arial" size="14.0" />
+                                             </font>
+                                          </CheckBox>
+                                          <Label alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Вторник 29.03" textAlignment="CENTER" textFill="WHITE" VBox.vgrow="ALWAYS" />
+                                       </children>
+                                    </VBox>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #8c2a2a;" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <CheckBox alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Не оплачено" textFill="WHITE" VBox.vgrow="ALWAYS">
+                                             <font>
+                                                <Font name="Arial" size="14.0" />
+                                             </font>
+                                          </CheckBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                 </VBox.margin>
+                              </HBox>
+                              <HBox layoutX="10.0" layoutY="10.0" prefHeight="60.0" prefWidth="200.0" spacing="1.0" style="-fx-background-color: #4c7551;">
+                                 <children>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #4c7551;" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <CheckBox alignment="BOTTOM_CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" selected="true" text="Проведено" textFill="WHITE" VBox.vgrow="ALWAYS">
+                                             <font>
+                                                <Font name="Arial" size="14.0" />
+                                             </font>
+                                          </CheckBox>
+                                          <Label alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Вторник 29.03" textAlignment="CENTER" textFill="WHITE" VBox.vgrow="ALWAYS" />
+                                       </children>
+                                    </VBox>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #4c7551;" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <CheckBox alignment="BOTTOM_CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" selected="true" text="Оплачено" textFill="WHITE" VBox.vgrow="ALWAYS">
+                                             <font>
+                                                <Font name="Arial" size="14.0" />
+                                             </font>
+                                          </CheckBox>
+                                          <Label alignment="TOP_CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="179.0" text="02.04 12:33" textFill="WHITE" VBox.vgrow="ALWAYS" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="3.0" right="3.0" />
+                                 </VBox.margin>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
+         </items>
+      </SplitPane>
+   </items>
+</SplitPane>
