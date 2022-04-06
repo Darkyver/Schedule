@@ -44,7 +44,6 @@ public class FirebaseUserRepository implements UserRepository {
                 return;
             }
 
-
             List<User> users = queryDocumentSnapshots.toObjects(User.class);
 //            this.users.addAll(users);
             for (OnChangeUserList listener : listeners) {

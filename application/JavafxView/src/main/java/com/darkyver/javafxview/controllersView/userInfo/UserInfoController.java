@@ -5,12 +5,11 @@ import com.darkyver.javafxview.controllersView.AbstractController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class UserInfoController extends AbstractController implements Initializable {
@@ -29,27 +28,37 @@ public class UserInfoController extends AbstractController implements Initializa
     private Button btnCancel;
 
     @FXML
-    private void onBtnSavePressed(){
-
-    }
-    @FXML
-    private void onBtnSaveRelease(){
-
-    }
-
-    @FXML
     private void onBtnCancel(){
         ((Stage) btnCancel.getScene().getWindow()).close();
     }
 
     @FXML
     private void onBtnSaveChanges(){
-
+        String name = tfName.getText();
+        int price;
+        try {
+            price = Integer.parseInt(tfPrice.getText());
+        } catch (NumberFormatException e) {
+            return;
+        }
+        String note = taNote.getText();
+        user.setName(name);
+        user.setPrice(price);
+        user.setNote(note);
+        getConfig().updateUser(user.getId(), user);
     }
 
     @FXML
     private void onBtnDelete(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("ВНИМАНИЕ!!!");
+        alert.setHeaderText("Вы действительно хотите удалить пользователя " + user.getName());
+        alert.setContentText("Вместе с ним удалятся все записи о про ведённых с ним занятиях и об оплатах!");
+        Optional<ButtonType> buttonType = alert.showAndWait();
+        if(buttonType.isEmpty() || !buttonType.get().equals(ButtonType.OK)) return;
 
+        getConfig().deleteUser(user.getId());
+        onBtnCancel();
     }
 
     public UserInfoController(User user) {

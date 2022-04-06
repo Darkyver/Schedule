@@ -17,7 +17,8 @@ public class CheckBoxElement extends VBox {
     private Label label = new Label("");
     public CheckBoxElement(String checkBoxText) {
         setCheckBoxFALSE(checkBoxText);
-
+        checkBox.setStyle("-fx-opacity: 1");
+        checkBox.setDisable(true);
     }
 
     public void setCheckBoxFALSE(String checkBoxText){

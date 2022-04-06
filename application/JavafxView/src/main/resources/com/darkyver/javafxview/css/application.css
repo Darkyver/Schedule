@@ -2,7 +2,7 @@
     -fx-background-radius: 6;
     -fx-border-radius: 6;
     -fx-background-color: #cfcfcf;
-    -fx-effect: dropshadow(gaussian, #d1d1d1, 3, 0.1, 1, 1);
+    -fx-effect: dropshadow(gaussian, #b3b3b3, 3, 0.1, 1, 1);
 }
 .button:hover{-fx-background-color: #dce5e6;}
 .button:pressed{-fx-background-color: #9ca5a6;}

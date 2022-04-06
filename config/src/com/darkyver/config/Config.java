@@ -18,6 +18,7 @@ public class Config {
     private CreateNewRecord createNewRecord       = new CreateNewRecord(userRepository);
     private ConnectToDataBaseInBackground connectToDataBaseInBackground = new ConnectToDataBaseInBackground(userRepository);
     private AddUserListChangeListener addUserListChangeListener = new AddUserListChangeListener(userRepository);
+    private AddNewRecord addNewRecord = new AddNewRecord(userRepository);
 
     public boolean createUser(String name, int id, String note){
         return crudActionsForUser.createUser(name, id, note);
@@ -42,7 +43,6 @@ public class Config {
     public Optional<Record> createNewRecord(int idUser, Record record){
         return createNewRecord.createRecord(idUser, record);
     }
-
     public boolean updateRecord(int userId, Record record){
         return updateRecordToUser.updateRecord(userId, record);
     }
@@ -53,7 +53,13 @@ public class Config {
 
     public void addUserListChangeListener(OnChangeUserList listener){
         addUserListChangeListener.addListenerChangeUserList(listener);
+    }
 
+    public boolean addNewLessonsToUser(int userId, int amountLessons, long time){
+        return addNewRecord.addNewLessonsToUser(userId, amountLessons, time);
+    }
+    public boolean addNewPaymentsToUser(int userId, int amountPayments, long time){
+        return addNewRecord.addNewPaymentsToUser(userId, amountPayments, time);
     }
 
 }

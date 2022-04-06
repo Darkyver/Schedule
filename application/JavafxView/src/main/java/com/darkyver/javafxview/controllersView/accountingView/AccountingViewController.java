@@ -4,12 +4,15 @@ import com.darkyver.domain.entity.Record;
 import com.darkyver.domain.entity.User;
 import com.darkyver.javafxview.ApplicationJavaFX;
 import com.darkyver.javafxview.controllersView.AbstractController;
+import com.darkyver.javafxview.controllersView.AddLessonController;
+import com.darkyver.javafxview.controllersView.AddPaymentController;
 import com.darkyver.javafxview.controllersView.accountingView.elements.RecordViewHBox;
 import com.darkyver.javafxview.controllersView.accountingView.elements.UserListView;
 import com.darkyver.javafxview.controllersView.userInfo.UserInfoController;
 import com.darkyver.javafxview.controllersView.utils.AlertBuilder;
 import com.darkyver.javafxview.controllersView.utils.UserComparatorById;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -37,13 +40,12 @@ public class AccountingViewController extends AbstractController implements Init
     private Button btnAddPayment;
     @FXML
     private ListView<UserListView> usersListView;
-    private SelectedChangeRecordViewListener changeRecordViewListener;
-
+    private TreeMap<Integer, User> users = new TreeMap<>();
 
     private Optional<User> currentUser = Optional.empty();
 
     @FXML
-    private void addLessonRelease() {
+    private void addLessonRelease() throws IOException {
         if (currentUser.isEmpty()) return;
 
         Optional<ButtonType> res = AlertBuilder.builder()
@@ -52,20 +54,46 @@ public class AccountingViewController extends AbstractController implements Init
                 .setType(Alert.AlertType.CONFIRMATION)
                 .build().showAndWait();
 
-        User user = currentUser.get();
-        Record record = new Record();
-        record.setLessonDoneTime(System.currentTimeMillis());
-        Optional<Record> optionalRecord = getConfig().createNewRecord(user.getId(), record);
-        if (optionalRecord.isEmpty()) {
-            warningAlert();
-            return;
-        }
+        if(res.isEmpty() || !res.get().equals(ButtonType.OK)) return;
 
-        if (res.isPresent() && res.get().equals(ButtonType.OK)) {
-            user.addRecord(optionalRecord.get());
-            showAllRecordsByUser(user);
-        }
+        User user = currentUser.get();
+        FXMLLoader loader = new FXMLLoader(ApplicationJavaFX.class.getResource("views/add-lesson-view.fxml"));
+        loader.setController(new AddLessonController(user));
+        Scene scene = new Scene(loader.load());
+        Stage stage = (Stage) splitPane.getScene().getWindow();
+        Stage newStage = new Stage();
+        newStage.setScene(scene);
+        newStage.initModality(Modality.WINDOW_MODAL);
+        newStage.initOwner(stage);
+        newStage.setResizable(false);
+        newStage.show();
     }
+
+    @FXML
+    private void addPaymentRelease() throws IOException {
+        if (currentUser.isEmpty()) return;
+
+        Optional<ButtonType> res = AlertBuilder.builder()
+                .setTitle("Добавление новой записи")
+                .setHeaderText("Новая оплата получена?")
+                .setType(Alert.AlertType.CONFIRMATION)
+                .build().showAndWait();
+
+        if(res.isEmpty() || !res.get().equals(ButtonType.OK)) return;
+
+        User user = currentUser.get();
+        FXMLLoader loader = new FXMLLoader(ApplicationJavaFX.class.getResource("views/add-payment-view.fxml"));
+        loader.setController(new AddPaymentController(user));
+        Scene scene = new Scene(loader.load());
+        Stage stage = (Stage) splitPane.getScene().getWindow();
+        Stage newStage = new Stage();
+        newStage.setScene(scene);
+        newStage.initModality(Modality.WINDOW_MODAL);
+        newStage.initOwner(stage);
+        newStage.setResizable(false);
+        newStage.show();
+    }
+
 
 
 
@@ -73,7 +101,6 @@ public class AccountingViewController extends AbstractController implements Init
     @FXML
     private void addNewUserRelease() {
         try {
-
             FXMLLoader loader = new FXMLLoader(ApplicationJavaFX.class.getResource("views/create-user-view.fxml"));
             Scene scene = new Scene(loader.load());
             Stage stage = (Stage) splitPane.getScene().getWindow();
@@ -85,39 +112,11 @@ public class AccountingViewController extends AbstractController implements Init
             newStage.setY(stage.getY());
             newStage.setResizable(false);
             newStage.show();
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
-    @FXML
-    private void addPaymentRelease() {
-        btnAddPayment.setStyle("-fx-background-color: #454a63;");
-        if (currentUser.isEmpty()) return;
-
-        Optional<ButtonType> res = AlertBuilder.builder()
-                .setTitle("Добавление новой записи")
-                .setHeaderText("Новая оплата получена?")
-                .setType(Alert.AlertType.CONFIRMATION)
-                .build().showAndWait();
-
-        User user = currentUser.get();
-        Record record = new Record();
-        record.setPaidTime(System.currentTimeMillis());
-        Optional<Record> optionalRecord = getConfig().createNewRecord(user.getId(), record);
-        if (optionalRecord.isEmpty()) {
-            warningAlert();
-            return;
-        }
-
-        if (res.isPresent() && res.get().equals(ButtonType.OK)) {
-            user.addRecord(optionalRecord.get());
-            showAllRecordsByUser(user);
-        }
-    }
 
     private void warningAlert() {
         AlertBuilder.builder()
@@ -127,7 +126,7 @@ public class AccountingViewController extends AbstractController implements Init
                 .build().showAndWait();
     }
 
-    private TreeSet<User> users = new TreeSet<>(new UserComparatorById());
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -141,8 +140,6 @@ public class AccountingViewController extends AbstractController implements Init
             newStage.setScene(scene);
             newStage.initModality(Modality.WINDOW_MODAL);
             newStage.initOwner(stage);
-//            newStage.setX(stage.getX() + stage.getWidth() / 2);
-//            newStage.setY(stage.getY());
             newStage.setResizable(false);
             newStage.show();
         });
@@ -152,22 +149,22 @@ public class AccountingViewController extends AbstractController implements Init
         btnAddPayment.setDisable(true);
         btnAddLesson.setDisable(true);
         btnAddUser.setDisable(true);
-        changeRecordViewListener = new SelectedChangeRecordViewListener();
 
         usersListView.getSelectionModel().selectedItemProperty().addListener((obs, old, current) -> {
             if (current == null) return;
             User user = current.getUser();
-            showAllRecordsByUser(user);
+            showAllRecordsByUser(users.get(user.getId()));
             currentUser = Optional.of(user);
         });
 
         getConfig().addUserListChangeListener(list -> {
             if (!users.isEmpty()) return;
-            users.addAll(list);
+            list.forEach(u -> users.put(u.getId(), u));
             Platform.runLater(() -> {
-                usersListView.getItems().clear();
-                for (User user : users) {
-                    addNewUserToListView(user);
+                ObservableList<UserListView> items = usersListView.getItems();
+                items.clear();
+                for (User user : list) {
+                    items.add(new UserListView(user));
                 }
                 btnAddUser.setDisable(false);
             });
@@ -176,49 +173,47 @@ public class AccountingViewController extends AbstractController implements Init
 
         getConfig().addUserListChangeListener(list -> {
             if (users.isEmpty()) return;
-            if (list.size() == users.size()) return;
-            if (list.size() > users.size()) users.addAll(list);
-            if (list.size() < users.size()) users.retainAll(list);
+            boolean sizeDif = users.size() != list.size();
+            users.clear();
+            list.forEach(u -> users.put(u.getId(), u));
+            if(sizeDif){
+                Platform.runLater(() -> {
+                    usersListView.getItems().clear();
+                    users.values().stream().sorted(new UserComparatorById()).forEach(user -> addNewUserToListView(user.getId()));
+                });
+            }
+        });
+
+        getConfig().addUserListChangeListener(list -> {
             Platform.runLater(() -> {
-                usersListView.getItems().clear();
-                users.forEach(user -> addNewUserToListView(user));
+                if(currentUser.isEmpty()) return;
+                int id = currentUser.get().getId();
+                showAllRecordsByUser(users.get(id));
             });
         });
+
+
 
     }
 
     private void showAllRecordsByUser(User user) {
+        if(user == null) return;
         recordsVBox.getChildren().clear();
-
         Collection<Record> records = user.getRecordMap().values();
-        records.stream().sorted((r1, r2) -> (int) (r2.getId() - r1.getId())).forEach(record -> addRecordViewHB(user, record));
+        records.stream().sorted((r1, r2) -> (int) (r2.getId() - r1.getId())).forEach(this::addRecordViewHB);
 
         btnAddPayment.setDisable(false);
         btnAddLesson.setDisable(false);
     }
 
-    private void addRecordViewHB(User user, Record record) {
-        RecordViewHBox recordView = new RecordViewHBox(user.getId(), record);
-        recordView.setOnRecordChangedListener(changeRecordViewListener);
-        recordsVBox.getChildren().add(recordView);
+    private void addRecordViewHB(Record record) {
+        recordsVBox.getChildren().add(new RecordViewHBox(record));
     }
 
-    private void addNewUserToListView(User user) {
-        usersListView.getItems().add(new UserListView(user));
-    }
-
-    class SelectedChangeRecordViewListener implements ChangeRecordListener {
-        @Override
-        public void accept(int userId, Record record) {
-            boolean result = getConfig().updateRecord(userId, record);
-
-            if (!result) {
-                AlertBuilder.builder()
-                        .setHeaderText("Что-то пошло не так :(")
-                        .setTitle("Warning alert").build()
-                        .showAndWait();
-            }
-
-        }
+    private void addNewUserToListView(Integer id) {
+        User user = users.get(id);
+        Platform.runLater(() -> {
+            usersListView.getItems().add(new UserListView(user));
+        });
     }
 }

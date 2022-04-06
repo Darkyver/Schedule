@@ -11,14 +11,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane stylesheets="@../css/application.css" fx:id="splitPane" dividerPositions="0.20355731225296442" orientation="VERTICAL" style="-fx-background-color: #bababa;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.darkyver.javafxview.controllersView.accountingView.AccountingViewController">
+<SplitPane fx:id="splitPane" dividerPositions="0.20355731225296442" minHeight="500.0" minWidth="600.0" orientation="VERTICAL" prefHeight="500.0" prefWidth="600.0" style="-fx-background-color: #bababa;" stylesheets="@../css/application.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.darkyver.javafxview.controllersView.accountingView.AccountingViewController">
    <items>
       <HBox prefHeight="100.0" prefWidth="200.0" />
       <SplitPane dividerPositions="0.3712374581939799" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #bababa;">
          <items>
             <VBox>
                <children>
-                  <Button fx:id="btnAddUser" onMouseReleased="#addNewUserRelease" styleClass="button-blue" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="35.0" text="Новый ученик" textFill="WHITE">
+                  <Button fx:id="btnAddUser" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseReleased="#addNewUserRelease" prefHeight="35.0" styleClass="button-blue" text="Новый ученик" textFill="WHITE">
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>
@@ -33,12 +33,12 @@
                <children>
                   <HBox prefHeight="35.0" prefWidth="200.0" spacing="3.0" style="-fx-background-color: #bababa;">
                      <children>
-                        <Button fx:id="btnAddLesson" styleClass="button-blue" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseReleased="#addLessonRelease" text="Новое занятие" textFill="WHITE" HBox.hgrow="ALWAYS">
+                        <Button fx:id="btnAddLesson" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseReleased="#addLessonRelease" styleClass="button-blue" text="Новое занятие" textFill="WHITE" HBox.hgrow="ALWAYS">
                            <font>
                               <Font name="Arial" size="14.0" />
                            </font>
                         </Button>
-                        <Button fx:id="btnAddPayment" styleClass="button-blue" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseReleased="#addPaymentRelease" text="Новая оплата" textFill="WHITE" HBox.hgrow="ALWAYS">
+                        <Button fx:id="btnAddPayment" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseReleased="#addPaymentRelease" styleClass="button-blue" text="Новая оплата" textFill="WHITE" HBox.hgrow="ALWAYS">
                            <font>
                               <Font name="Arial" size="14.0" />
                            </font>
