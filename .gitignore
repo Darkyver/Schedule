@@ -2,5 +2,6 @@
 /application/JavafxView/target/
 /domain/target/
 /FirebaseRepository/target/
+/FirebaseRepository/src/main/resources/private
 /out/
 /usecases/target/

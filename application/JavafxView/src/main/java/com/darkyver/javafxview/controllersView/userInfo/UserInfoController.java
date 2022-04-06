@@ -1,7 +1,6 @@
 package com.darkyver.javafxview.controllersView.userInfo;
 
 import com.darkyver.domain.entity.User;
-import com.darkyver.javafxview.ApplicationJavaFX;
 import com.darkyver.javafxview.controllersView.AbstractController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -9,7 +8,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -61,7 +59,6 @@ public class UserInfoController extends AbstractController implements Initializa
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-//        tfName.getScene().getStylesheets().add("com/darkyver/javafxview/css/application.css");
         tfName.setText(user.getName());
         tfPrice.setText(String.valueOf(user.getPrice()));
         taNote.setText(user.getNote());

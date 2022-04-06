@@ -16,7 +16,6 @@ public class ApplicationJavaFX {
         public void start(Stage stage) throws IOException {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("views/accounting-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
-            scene.getStylesheets().add(getClass().getResource("css/application.css").toExternalForm());
             stage.setTitle("Accounting");
             stage.setScene(scene);
             stage.setResizable(false);

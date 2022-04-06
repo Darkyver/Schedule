@@ -1,4 +1,36 @@
 .button{
     -fx-background-radius: 6;
     -fx-border-radius: 6;
+    -fx-background-color: #cfcfcf;
+    -fx-effect: dropshadow(gaussian, #d1d1d1, 3, 0.1, 1, 1);
 }
+.button:hover{-fx-background-color: #dce5e6;}
+.button:pressed{-fx-background-color: #9ca5a6;}
+.button:focused{-fx-effect: dropshadow(gaussian, #5a5c5c, 3, 0.1, 1, 1);}
+
+
+.button-green{
+    -fx-background-color: #d4fcdf;
+    -fx-border-color: #729c7d;
+}
+.button-green:hover{-fx-background-color: #ebfff0;}
+.button-green:pressed{-fx-background-color: #56a66c;}
+
+
+
+.button-red{
+    -fx-background-color: #fccaca;
+    -fx-border-color: #a32f2f;
+}
+.button-red:hover{-fx-background-color: #f7dada;}
+.button-red:pressed{-fx-background-color: #9c3b3b;}
+
+
+.button-blue{
+    -fx-background-color: #454a63;
+}
+.button-blue:hover{-fx-background-color: #5b607a;}
+.button-blue:pressed{-fx-background-color: #878eb0;}
+
+
+

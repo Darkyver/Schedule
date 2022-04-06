@@ -12,7 +12,7 @@ public class FirebaseInitialization {
         try {
             System.out.println();
             FileInputStream serviceAccount =
-                    new FileInputStream(getClass().getClassLoader().getResource("serviceAccountFirebase.json").getPath());
+                    new FileInputStream(getClass().getClassLoader().getResource("private/serviceAccountFirebase.json").getPath());
 
 
 //            FirebaseOptions options = new FirebaseOptions.Builder()

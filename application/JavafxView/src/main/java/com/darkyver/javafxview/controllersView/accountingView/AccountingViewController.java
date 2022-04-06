@@ -42,21 +42,8 @@ public class AccountingViewController extends AbstractController implements Init
 
     private Optional<User> currentUser = Optional.empty();
 
-
-    @FXML
-    private void addLessonPressed() {
-        btnAddLesson.setStyle("-fx-background-color: #878eb0;");
-    }
-
-    @FXML
-    private void addPaymentPressed() {
-        btnAddPayment.setStyle("-fx-background-color: #878eb0;");
-    }
-
-
     @FXML
     private void addLessonRelease() {
-        btnAddLesson.setStyle("-fx-background-color: #454a63;");
         if (currentUser.isEmpty()) return;
 
         Optional<ButtonType> res = AlertBuilder.builder()
@@ -81,14 +68,10 @@ public class AccountingViewController extends AbstractController implements Init
     }
 
 
-    @FXML
-    private void addNewUserPressed() {
-        btnAddUser.setStyle("-fx-background-color: #878eb0;");
-    }
+
 
     @FXML
     private void addNewUserRelease() {
-        btnAddUser.setStyle("-fx-background-color: #454a63;");
         try {
 
             FXMLLoader loader = new FXMLLoader(ApplicationJavaFX.class.getResource("views/create-user-view.fxml"));
@@ -149,27 +132,19 @@ public class AccountingViewController extends AbstractController implements Init
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         UserListViewCellFactory cellFactory = new UserListViewCellFactory();
-        cellFactory.addCellActionListener(new OnButtonListener<User>() {
-            @Override
-            public void handle(User user) {
-                try {
-                    FXMLLoader loader = new FXMLLoader(ApplicationJavaFX.class.getResource("views/user-info.fxml"));
-                    loader.setController(new UserInfoController(user));
-                    Scene scene = new Scene(loader.load());
-
-                    Stage stage = (Stage) splitPane.getScene().getWindow();
-                    Stage newStage = new Stage();
-                    newStage.setScene(scene);
-                    newStage.initModality(Modality.WINDOW_MODAL);
-                    newStage.initOwner(stage);
-                    newStage.setX(stage.getX() + stage.getWidth() / 2);
-                    newStage.setY(stage.getY());
-                    newStage.setResizable(false);
-                    newStage.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        cellFactory.addCellActionListener(user -> {
+            FXMLLoader loader = new FXMLLoader(ApplicationJavaFX.class.getResource("views/user-info.fxml"));
+            loader.setController(new UserInfoController(user));
+            Scene scene = new Scene(loader.load());
+            Stage stage = (Stage) splitPane.getScene().getWindow();
+            Stage newStage = new Stage();
+            newStage.setScene(scene);
+            newStage.initModality(Modality.WINDOW_MODAL);
+            newStage.initOwner(stage);
+//            newStage.setX(stage.getX() + stage.getWidth() / 2);
+//            newStage.setY(stage.getY());
+            newStage.setResizable(false);
+            newStage.show();
         });
         usersListView.setCellFactory(cellFactory);
         getConfig().connectInBackground();
