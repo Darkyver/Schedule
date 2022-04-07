@@ -2,7 +2,7 @@ package com.darkyver.usecases;
 
 import com.darkyver.domain.entity.Record;
 import com.darkyver.domain.entity.User;
-import com.darkyver.domain.port.OnChangeUserList;
+import com.darkyver.domain.port.OnChangeListener;
 import com.darkyver.domain.port.UserRepository;
 
 import java.util.*;
@@ -38,31 +38,6 @@ public class MockRepository implements UserRepository {
         if(id < 0) return false;
         return integerUserMap.remove(id) != null;
     }
-
-    @Override
-    public boolean addRecordToUser(int idUser, Record record) {
-        if(idUser < 0) return false;
-        if(!integerUserMap.containsKey(idUser)) return false;
-        Map<String, Record> recordMap = integerUserMap.get(idUser).getRecordMap();
-        if (recordMap.containsKey(String.valueOf(record.getId()))) {
-            return false;
-        }
-        recordMap.put(String.valueOf(record.getId()), record);
-        return true;
-    }
-
-    @Override
-    public boolean updateRecordToUser(int idUser, Record record) {
-        if(idUser < 0) return false;
-        if(!integerUserMap.containsKey(idUser)) return false;
-        Map<String, Record> recordMap = integerUserMap.get(idUser).getRecordMap();
-        if (!recordMap.containsKey(String.valueOf(record.getId()))) {
-            return false;
-        }
-        recordMap.put(String.valueOf(record.getId()), record);
-        return true;
-    }
-
     @Override
     public boolean createUser(String name, int price, String note) {
         OptionalLong max = integerUserMap.values().stream().mapToLong(u -> u.getId()).max();
@@ -78,7 +53,27 @@ public class MockRepository implements UserRepository {
     }
 
     @Override
-    public void addListUsersChangeListener(OnChangeUserList listener) {
+    public void onUserAdd(OnChangeListener<User> listener) {
+
+    }
+
+    @Override
+    public void onUserRemove(OnChangeListener<User> listener) {
+
+    }
+
+    @Override
+    public void onUserUpdate(OnChangeListener<User> listener) {
+
+    }
+
+    @Override
+    public void onConnect(Runnable runnable) {
+
+    }
+
+    @Override
+    public void onDisconnect(Runnable runnable) {
 
     }
 }

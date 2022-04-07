@@ -9,6 +9,8 @@ module com.darkyver.firebase {
     requires com.google.auth.oauth2;
 
     exports com.darkyver.firebase.service;
+    exports com.darkyver.firebase.pojo;
     exports com.darkyver.firebase;
 
+    opens com.darkyver.firebase.pojo to google.cloud.firestore;
 }

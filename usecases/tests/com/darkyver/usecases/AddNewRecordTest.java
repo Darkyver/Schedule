@@ -53,10 +53,10 @@ class AddNewRecordTest {
     void addFirstLessonToUser() {
         long time = System.currentTimeMillis();
         assertTrue(addNewRecord.addNewLessonsToUser(expectedIDs[0], 1, time));
-        Map<String, Record> recordMap = repository.getUser(expectedIDs[0]).get().getRecordMap();
+        Map<Integer, Record> recordMap = repository.getUser(expectedIDs[0]).get().getRecordMap();
         assertEquals(1, recordMap.size());
-        assertEquals(time, recordMap.get(String.valueOf(0)).getLessonDoneTime());
-        assertEquals(0, recordMap.get(String.valueOf(0)).getPaidTime());
+        assertEquals(time, recordMap.get(0).getLessonDoneTime());
+        assertEquals(0, recordMap.get(0).getPaidTime());
     }
 
     @Test
@@ -65,9 +65,9 @@ class AddNewRecordTest {
         addNewRecord.addNewPaymentsToUser(expectedIDs[0], 1, time);
 
         assertTrue(addNewRecord.addNewLessonsToUser(expectedIDs[0], 1, time));
-        Map<String, Record> recordMap = repository.getUser(expectedIDs[0]).get().getRecordMap();
+        Map<Integer, Record> recordMap = repository.getUser(expectedIDs[0]).get().getRecordMap();
         assertEquals(1, recordMap.size());
-        Record record = recordMap.get(String.valueOf(0));
+        Record record = recordMap.get(0);
         assertNotNull(record);
         assertEquals(time, record.getLessonDoneTime());
         assertEquals(time, record.getPaidTime());
@@ -77,17 +77,17 @@ class AddNewRecordTest {
         long timeLesson = System.currentTimeMillis();
         assertTrue(addNewRecord.addNewLessonsToUser(expectedIDs[0], 1, timeLesson));
         assertEquals(3, recordMap.size());
-        Record record1 = recordMap.get(String.valueOf(1));
+        Record record1 = recordMap.get(1);
         assertEquals(timeLesson, record1.getLessonDoneTime());
         assertEquals(timePayment, record1.getPaidTime());
 
         timeLesson = System.currentTimeMillis();
         assertTrue(addNewRecord.addNewLessonsToUser(expectedIDs[0], 2, timeLesson));
         assertEquals(4, recordMap.size());
-        Record record2 = recordMap.get(String.valueOf(2));
+        Record record2 = recordMap.get(2);
         assertEquals(timeLesson, record2.getLessonDoneTime());
         assertEquals(timePayment, record2.getPaidTime());
-        Record record3 = recordMap.get(String.valueOf(3));
+        Record record3 = recordMap.get(3);
         assertEquals(timeLesson, record3.getLessonDoneTime());
         assertEquals(0, record3.getPaidTime());
     }
@@ -96,10 +96,10 @@ class AddNewRecordTest {
     void addNewPaymentToUser() {
         long time = System.currentTimeMillis();
         assertTrue(addNewRecord.addNewPaymentsToUser(expectedIDs[0], 1, time));
-        Map<String, Record> recordMap = repository.getUser(expectedIDs[0]).get().getRecordMap();
+        Map<Integer, Record> recordMap = repository.getUser(expectedIDs[0]).get().getRecordMap();
         assertEquals(1, recordMap.size());
-        assertEquals(time, recordMap.get(String.valueOf(0)).getPaidTime());
-        assertEquals(0, recordMap.get(String.valueOf(0)).getLessonDoneTime());
+        assertEquals(time, recordMap.get(0).getPaidTime());
+        assertEquals(0, recordMap.get(0).getLessonDoneTime());
     }
 
     @Test
@@ -108,9 +108,9 @@ class AddNewRecordTest {
         addNewRecord.addNewLessonsToUser(expectedIDs[0], 1, time);
 
         assertTrue(addNewRecord.addNewPaymentsToUser(expectedIDs[0], 1, time));
-        Map<String, Record> recordMap = repository.getUser(expectedIDs[0]).get().getRecordMap();
+        Map<Integer, Record> recordMap = repository.getUser(expectedIDs[0]).get().getRecordMap();
         assertEquals(1, recordMap.size());
-        Record record = recordMap.get(String.valueOf(0));
+        Record record = recordMap.get(0);
         assertNotNull(record);
         assertEquals(time, record.getLessonDoneTime());
         assertEquals(time, record.getPaidTime());
@@ -120,17 +120,17 @@ class AddNewRecordTest {
         long timePayment = System.currentTimeMillis();
         assertTrue(addNewRecord.addNewPaymentsToUser(expectedIDs[0], 1, timePayment));
         assertEquals(3, recordMap.size());
-        Record record1 = recordMap.get(String.valueOf(1));
+        Record record1 = recordMap.get(1);
         assertEquals(timePayment, record1.getPaidTime());
         assertEquals(timeLesson, record1.getLessonDoneTime());
 
         timePayment = System.currentTimeMillis();
         assertTrue(addNewRecord.addNewPaymentsToUser(expectedIDs[0], 2, timePayment));
         assertEquals(4, recordMap.size());
-        Record record2 = recordMap.get(String.valueOf(2));
+        Record record2 = recordMap.get(2);
         assertEquals(timeLesson, record2.getLessonDoneTime());
         assertEquals(timePayment, record2.getPaidTime());
-        Record record3 = recordMap.get(String.valueOf(3));
+        Record record3 = recordMap.get(3);
         assertEquals(timePayment, record3.getPaidTime());
         assertEquals(0, record3.getLessonDoneTime());
     }

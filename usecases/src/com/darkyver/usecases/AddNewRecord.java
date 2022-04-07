@@ -36,7 +36,7 @@ public class AddNewRecord {
         Optional<User> userOptional = repository.getUser(userId);
         if (userOptional.isEmpty()) return false;
         User user = userOptional.get();
-        Map<String, Record> recordMap = user.getRecordMap();
+        Map<Integer, Record> recordMap = user.getRecordMap();
         List<Record> records = recordMap.values().stream().filter(r -> (type.equals(Type.PAYMENT) ? r.getPaidTime() : r.getLessonDoneTime()) == 0).toList();
         for (int i = 0; i < records.size() & i < amountRecords; i++) {
             switch (type){
@@ -54,7 +54,7 @@ public class AddNewRecord {
                     case PAYMENT -> record.setPaidTime(time);
                 }
 
-                recordMap.put(String.valueOf(record.getId()), record);
+                recordMap.put((int) record.getId(), record);
             }
         }
         repository.updateUser(user.getId(), user);

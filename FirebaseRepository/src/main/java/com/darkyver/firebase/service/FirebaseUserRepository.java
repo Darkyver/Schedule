@@ -1,62 +1,92 @@
 package com.darkyver.firebase.service;
 
-import com.darkyver.domain.port.OnChangeUserList;
+import com.darkyver.domain.port.OnChangeListener;
 import com.darkyver.firebase.FirebaseInitialization;
 import com.darkyver.domain.entity.Record;
 import com.darkyver.domain.entity.User;
 import com.darkyver.domain.port.UserRepository;
+import com.darkyver.firebase.pojo.UserFirebase;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
-import com.google.cloud.firestore.EventListener;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.cloud.FirestoreClient;
+import com.google.cloud.firestore.DocumentChange.Type;
+import com.google.firebase.database.*;
 
 import java.util.*;
-import java.util.concurrent.AbstractExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class FirebaseUserRepository implements UserRepository {
 
     private static final String COLLECTION_NAME = "users";
 
-    private List<OnChangeUserList> listeners = new ArrayList<>();
-//    private TreeSet<User> users = new TreeSet<>();
+    private final List<Runnable> runnablesConnect = new ArrayList<>();
+    private final List<Runnable> runnablesDisconnect = new ArrayList<>();
+    private final HashMap<Type, List<OnChangeListener<User>>> listenersMap = new HashMap<>();
 
+    public FirebaseUserRepository() {
+        for (Type value : Type.values()) {
+            listenersMap.put(value, new ArrayList<>());
+        }
+    }
+
+    @Override
+    public void onUserAdd(OnChangeListener<User> listener) {
+        listenersMap.get(Type.ADDED).add(listener);
+    }
+
+    @Override
+    public void onUserRemove(OnChangeListener<User> listener) {
+        listenersMap.get(Type.REMOVED).add(listener);
+    }
+
+    @Override
+    public void onUserUpdate(OnChangeListener<User> listener) {
+        listenersMap.get(Type.MODIFIED).add(listener);
+    }
+
+    @Override
+    public void onConnect(Runnable runnable) {
+        runnablesConnect.add(runnable);
+    }
+    @Override
+    public void onDisconnect(Runnable runnable) {
+        runnablesDisconnect.add(runnable);
+    }
 
     @Override
     public void connect() {
         FirebaseInitialization firebaseInitialization = new FirebaseInitialization();
         firebaseInitialization.initialization();
 
-//        for (DocumentReference listDocument : FirestoreClient.getFirestore().collection(COLLECTION_NAME).listDocuments()) {
-//            listDocument.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-//                @Override
-//                public void onEvent(DocumentSnapshot documentSnapshot, FirestoreException e) {
-//                    System.out.println(documentSnapshot.toObject(User.class));
-//                }
-//            });
-//        }
-
-//        DocumentReference document = FirestoreClient.getFirestore().collection(COLLECTION_NAME).document(String.valueOf(0));
-//        document.get().addListener(() -> System.out.println("run"), command -> System.out.println(command));
-
         FirestoreClient.getFirestore().collection(COLLECTION_NAME).addSnapshotListener((queryDocumentSnapshots, e) -> {
             if (queryDocumentSnapshots == null) {
                 return;
             }
-
-            List<User> users = queryDocumentSnapshots.toObjects(User.class);
-//            this.users.addAll(users);
-            for (OnChangeUserList listener : listeners) {
-                listener.change(users);
+            for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+                listenersMap.get(dc.getType()).forEach(listener -> listener.change(dc.getDocument().toObject(UserFirebase.class).toUser()));
             }
         });
+
+        DatabaseReference reference = FirebaseDatabase
+                .getInstance("https://fb-demo-3849e-default-rtdb.europe-west1.firebasedatabase.app")
+                .getReference(".info/connected");
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue(Boolean.class))
+                    runnablesConnect.forEach(Runnable::run);
+                else
+                    runnablesDisconnect.forEach(Runnable::run);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+
     }
 
     @Override
     public Optional<User> getUser(int id) {
-//        Optional<User> first = users.stream().filter(u -> u.getId() == id).findFirst();
-//        if(first.isPresent()) return first;
-
         try {
 
             Firestore firestore = FirestoreClient.getFirestore();
@@ -65,8 +95,7 @@ public class FirebaseUserRepository implements UserRepository {
 
             DocumentSnapshot doc = future.get();
             if (doc.exists()) {
-
-                return Optional.ofNullable(doc.toObject(User.class));
+                return Optional.ofNullable(doc.toObject(UserFirebase.class).toUser());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,7 +112,7 @@ public class FirebaseUserRepository implements UserRepository {
             for (DocumentReference documentReference : listDocuments) {
                 DocumentSnapshot doc = documentReference.get().get();
                 if(doc.exists()){
-                    users.add(doc.toObject(User.class));
+                    users.add(doc.toObject(UserFirebase.class).toUser());
                 }
             }
         } catch (Exception e) {
@@ -114,19 +143,11 @@ public class FirebaseUserRepository implements UserRepository {
         return false;
     }
 
-
-
-    @Override
-    public void addListUsersChangeListener(OnChangeUserList listener) {
-        listeners.add(listener);
-    }
-
-
     @Override
     public boolean updateUser(int id, User user) {
         try {
             Firestore firestore = FirestoreClient.getFirestore();
-            ApiFuture<WriteResult> apiFuture = firestore.collection(COLLECTION_NAME).document(String.valueOf(user.getId())).set(user);
+            ApiFuture<WriteResult> apiFuture = firestore.collection(COLLECTION_NAME).document(String.valueOf(user.getId())).set(UserFirebase.fromUser(user));
 
             return !apiFuture.get().getUpdateTime().toString().isEmpty();
         } catch (Exception e) {
@@ -145,22 +166,5 @@ public class FirebaseUserRepository implements UserRepository {
             e.printStackTrace();
         }
         return false;
-    }
-
-    @Override
-    public boolean addRecordToUser(int idUser, Record record) {
-        Optional<User> user = getUser(idUser);
-        if(user.isEmpty()) return false;
-        boolean addRecord = user.get().addRecord(record);
-        return addRecord && updateUser(idUser, user.get());
-    }
-
-    @Override
-    public boolean updateRecordToUser(int id, Record record) {
-        Optional<User> user = getUser(id);
-        if(user.isEmpty()) return false;
-        boolean b = user.get().updateRecord(record);
-        if(!b) return false;
-        return updateUser(id, user.get());
     }
 }

@@ -46,6 +46,7 @@ public class UserInfoController extends AbstractController implements Initializa
         user.setPrice(price);
         user.setNote(note);
         getConfig().updateUser(user.getId(), user);
+        onBtnCancel();
     }
 
     @FXML

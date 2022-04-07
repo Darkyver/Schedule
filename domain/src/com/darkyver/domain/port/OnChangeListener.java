@@ -4,6 +4,6 @@ import com.darkyver.domain.entity.User;
 
 import java.util.List;
 
-public interface OnChangeUserList {
-    void change(List<User> userChanges);
+public interface OnChangeListener<T> {
+    void change(T changes);
 }

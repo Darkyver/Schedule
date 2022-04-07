@@ -13,11 +13,12 @@ public interface UserRepository {
     boolean updateUser(int id, User user);
     boolean deleteUser(int id);
 
-    boolean addRecordToUser(int idUser,  Record record);
-    boolean updateRecordToUser(int id, Record record);
-
     boolean createUser(String name, int price, String note);
 
-    void addListUsersChangeListener(OnChangeUserList listener);
+    void onUserAdd(OnChangeListener<User> listener);
+    void onUserRemove(OnChangeListener<User> listener);
+    void onUserUpdate(OnChangeListener<User> listener);
+    void onConnect(Runnable runnable);
+    void onDisconnect(Runnable runnable);
 
 }

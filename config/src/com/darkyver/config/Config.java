@@ -1,9 +1,8 @@
 package com.darkyver.config;
 
-import com.darkyver.domain.port.OnChangeUserList;
+import com.darkyver.domain.port.OnChangeListener;
 import com.darkyver.firebase.service.FirebaseUserRepository;
 import com.darkyver.domain.entity.User;
-import com.darkyver.domain.entity.Record;
 import com.darkyver.domain.port.UserRepository;
 import com.darkyver.usecases.*;
 
@@ -14,10 +13,8 @@ public class Config {
     private UserRepository userRepository = new FirebaseUserRepository();
     private CRUDActionsForUser crudActionsForUser = new CRUDActionsForUser(userRepository);
     private GetUserAnalytics getUserAnalytics     = new GetUserAnalytics(userRepository);
-    private UpdateRecordToUser updateRecordToUser = new UpdateRecordToUser(userRepository);
-    private CreateNewRecord createNewRecord       = new CreateNewRecord(userRepository);
     private ConnectToDataBaseInBackground connectToDataBaseInBackground = new ConnectToDataBaseInBackground(userRepository);
-    private AddUserListChangeListener addUserListChangeListener = new AddUserListChangeListener(userRepository);
+    private AddListenersUserCase addUserListChangeListener = new AddListenersUserCase(userRepository);
     private AddNewRecord addNewRecord = new AddNewRecord(userRepository);
 
     public boolean createUser(String name, int id, String note){
@@ -40,19 +37,25 @@ public class Config {
         return crudActionsForUser.deleteUser(id);
     }
 
-    public Optional<Record> createNewRecord(int idUser, Record record){
-        return createNewRecord.createRecord(idUser, record);
-    }
-    public boolean updateRecord(int userId, Record record){
-        return updateRecordToUser.updateRecord(userId, record);
-    }
-
     public void connectInBackground(){
         connectToDataBaseInBackground.connect();
     }
 
-    public void addUserListChangeListener(OnChangeUserList listener){
-        addUserListChangeListener.addListenerChangeUserList(listener);
+    public void onUserAdd(OnChangeListener<User> listener){
+        addUserListChangeListener.onUserAdd(listener);
+    }
+    public void onUserRemove(OnChangeListener<User> listener){
+        addUserListChangeListener.onUserRemove(listener);
+    }
+    public void onUserUpdate(OnChangeListener<User> listener){
+        addUserListChangeListener.onUserUpdate(listener);
+    }
+
+    public void onConnect(Runnable runnable){
+        addUserListChangeListener.onConnect(runnable);
+    }
+    public void onDisconnect(Runnable runnable){
+        addUserListChangeListener.onDisconnect(runnable);
     }
 
     public boolean addNewLessonsToUser(int userId, int amountLessons, long time){

@@ -12,6 +12,7 @@ import com.darkyver.javafxview.controllersView.userInfo.UserInfoController;
 import com.darkyver.javafxview.controllersView.utils.AlertBuilder;
 import com.darkyver.javafxview.controllersView.utils.UserComparatorById;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -40,10 +41,10 @@ public class AccountingViewController extends AbstractController implements Init
     private Button btnAddPayment;
     @FXML
     private ListView<UserListView> usersListView;
-    private TreeMap<Integer, User> users = new TreeMap<>();
+    private final TreeMap<Integer, User> users = new TreeMap<>();
+
 
     private Optional<User> currentUser = Optional.empty();
-
     @FXML
     private void addLessonRelease() throws IOException {
         if (currentUser.isEmpty()) return;
@@ -68,7 +69,6 @@ public class AccountingViewController extends AbstractController implements Init
         newStage.setResizable(false);
         newStage.show();
     }
-
     @FXML
     private void addPaymentRelease() throws IOException {
         if (currentUser.isEmpty()) return;
@@ -93,11 +93,6 @@ public class AccountingViewController extends AbstractController implements Init
         newStage.setResizable(false);
         newStage.show();
     }
-
-
-
-
-
     @FXML
     private void addNewUserRelease() {
         try {
@@ -116,18 +111,6 @@ public class AccountingViewController extends AbstractController implements Init
             e.printStackTrace();
         }
     }
-
-
-    private void warningAlert() {
-        AlertBuilder.builder()
-                .setType(Alert.AlertType.WARNING)
-                .setTitle("Ошибка :(")
-                .setHeaderText("Что-то пошло не так при создании новой записи")
-                .build().showAndWait();
-    }
-
-
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         UserListViewCellFactory cellFactory = new UserListViewCellFactory();
@@ -153,67 +136,45 @@ public class AccountingViewController extends AbstractController implements Init
         usersListView.getSelectionModel().selectedItemProperty().addListener((obs, old, current) -> {
             if (current == null) return;
             User user = current.getUser();
-            showAllRecordsByUser(users.get(user.getId()));
+            showAllRecordsByUser(user);
             currentUser = Optional.of(user);
         });
 
-        getConfig().addUserListChangeListener(list -> {
-            if (!users.isEmpty()) return;
-            list.forEach(u -> users.put(u.getId(), u));
-            Platform.runLater(() -> {
-                ObservableList<UserListView> items = usersListView.getItems();
-                items.clear();
-                for (User user : list) {
-                    items.add(new UserListView(user));
-                }
-                btnAddUser.setDisable(false);
-            });
+        getConfig().onUserAdd(user ->{
+            Platform.runLater(() -> usersListView.getItems().add(new UserListView(user)));
         });
-
-
-        getConfig().addUserListChangeListener(list -> {
-            if (users.isEmpty()) return;
-            boolean sizeDif = users.size() != list.size();
-            users.clear();
-            list.forEach(u -> users.put(u.getId(), u));
-            if(sizeDif){
-                Platform.runLater(() -> {
-                    usersListView.getItems().clear();
-                    users.values().stream().sorted(new UserComparatorById()).forEach(user -> addNewUserToListView(user.getId()));
-                });
+        getConfig().onUserRemove(user ->{
+            Platform.runLater(() -> usersListView.getItems().remove(new UserListView(user)));
+        });
+        getConfig().onUserUpdate(user ->{
+            if (currentUser.isEmpty()) {
+                return;
             }
-        });
-
-        getConfig().addUserListChangeListener(list -> {
-            Platform.runLater(() -> {
-                if(currentUser.isEmpty()) return;
-                int id = currentUser.get().getId();
-                showAllRecordsByUser(users.get(id));
+            if(currentUser.get().getId() == user.getId()) {
+                Platform.runLater(() -> showAllRecordsByUser(user));
+                currentUser = Optional.of(user);
+            }
+            Platform.runLater(()->{
+                int index = usersListView.getItems().indexOf(new UserListView(user));
+                usersListView.getItems().set(index, new UserListView(user));
             });
+
+
         });
-
-
-
+        getConfig().onConnect(()->btnAddUser.setDisable(false));
+        getConfig().onDisconnect(()->btnAddUser.setDisable(true));
     }
 
     private void showAllRecordsByUser(User user) {
         if(user == null) return;
         recordsVBox.getChildren().clear();
-        Collection<Record> records = user.getRecordMap().values();
-        records.stream().sorted((r1, r2) -> (int) (r2.getId() - r1.getId())).forEach(this::addRecordViewHB);
-
+        TreeMap<Integer, Record> recordMap = (TreeMap<Integer, Record>) user.getRecordMap();
+        recordMap.descendingMap().forEach((k,v) -> addRecordViewHB(v));
         btnAddPayment.setDisable(false);
         btnAddLesson.setDisable(false);
     }
 
     private void addRecordViewHB(Record record) {
         recordsVBox.getChildren().add(new RecordViewHBox(record));
-    }
-
-    private void addNewUserToListView(Integer id) {
-        User user = users.get(id);
-        Platform.runLater(() -> {
-            usersListView.getItems().add(new UserListView(user));
-        });
     }
 }

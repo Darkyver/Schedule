@@ -8,7 +8,7 @@ public class User implements Comparable<User> {
     private String note;
     private int price;
 
-    private Map<String, Record> recordMap = new HashMap<>();
+    private Map<Integer, Record> recordMap = new TreeMap<>();
 
     public User() {
     }
@@ -45,34 +45,12 @@ public class User implements Comparable<User> {
         this.price = price;
     }
 
-//    public List<Record> getRecordList() {
-//        return recordMap.values().stream().toList();
-//    }
-
-    public Map<String, Record> getRecordMap() {
+    public Map<Integer, Record> getRecordMap() {
         return recordMap;
     }
 
-    public void setRecordMap(Map<String, Record> recordMap) {
+    public void setRecordMap(Map<Integer, Record> recordMap) {
         this.recordMap = recordMap;
-    }
-
-    public Record getRecord(int id){
-        return recordMap.get(String.valueOf(id));
-    }
-
-    public boolean addRecord(Record record){
-        String key = String.valueOf(record.getId());
-        if (recordMap.containsKey(key)) return false;
-        recordMap.put(key, record);
-        return true;
-    }
-
-    public boolean updateRecord(Record record){
-        String key = String.valueOf(record.getId());
-        if (!recordMap.containsKey(key)) return false;
-        recordMap.put(key, record);
-        return  true;
     }
 
     @Override
